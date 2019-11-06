@@ -1,0 +1,96 @@
+Text File:
+	http://flux.lengow.com/retargeting/adroll/LGW-3056ff910090f829f3ad6ff886f5ca65/txt/
+XML File:
+	https://decorat.co.uk/products-available-decorat.xml
+	<?php 
+
+// xml file path 
+$path = "GFG.xml"; 
+
+// Read entire file into string 
+$xmlfile = file_get_contents($path); 
+
+// Convert xml string into an object 
+$new = simplexml_load_string($xmlfile); 
+
+// Convert into json 
+$con = json_encode($new); 
+
+// Convert into associative array 
+$newArr = json_decode($con, true); 
+
+print_r($newArr); 
+
+?> 
+
+<?php
+
+include 'XmlToJson.php';
+
+print XmlToJson::Parse("http://www.nfl.com/liveupdate/scorestrip/ss.xml");
+
+?
+
+<?php
+
+class XmlToJson {
+
+	public function Parse ($url) {
+
+		$fileContents= file_get_contents($url);
+
+		$fileContents = str_replace(array("\n", "\r", "\t"), '', $fileContents);
+
+		$fileContents = trim(str_replace('"', "'", $fileContents));
+
+		$simpleXml = simplexml_load_string($fileContents);
+
+		$json = json_encode($simpleXml);
+
+		return $json;
+
+	}
+
+}
+
+?>
+
+
+
+
+CSV File:
+   
+
+$file="1_23.csv";
+$csv= file_get_contents($file);
+$array = array_map("str_getcsv", explode("\n", $csv));
+$json = json_encode($array);
+print_r($json);
+
+
+
+$feed = $url; // path to the csv file
+   $keys = array();
+   $newArray = array();
+   $data = csvToArray($feed, ',');
+   $count = count($data) - 1;
+   //Use first row for names
+   $labels = array_shift($data);
+   foreach ($labels as $label) {
+       $keys[] = $label;
+   }
+  // Add Ids, just in case we want them later
+   $keys[] = 'id';
+   for ($i = 0; $i < $count; $i++) {
+       $data[$i][] = $i;
+   }
+   for ($j = 0; $j < $count; $j++) {
+       $d = array_combine($keys, $data[$j]);
+       $newArray[$j] = $d;
+   }
+  $json_data = json_encode($newArray);
+  header('Content-disposition: attachment; filename='.$file_name.'.json');
+  header('Content-type: application/json');
+ echo $json_data;
+
+
